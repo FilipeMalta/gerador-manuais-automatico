@@ -1,22 +1,62 @@
 {
-  "nome_produto": "Seu Produto",
-  "descricao": "Descrição breve do produto",
-  "versao": "1.0.0",
-  "autor": "Seu Nome",
-  "requisitos": [
-    "Python 3.8+",
-    "pip"
-  ],
+  "metadata": {
+    "nome_manual": "Manual Música ao Vivo - Edição",
+    "modulo": "Música ao Vivo",
+    "sistema": "Sistema de Gestão Musical",
+    "elaborado": "25/01/2026",
+    "revisado": "03/02/2026",
+    "classificacao": "interna",
+    "logo_path": "logo.png"
+  },
+  "objetivo": "Descrever o processo de edição de trechos musicais no sistema, permitindo ao usuário criar, classificar, remover e gerenciar segmentos específicos de áudio dentro das músicas cadastradas.",
+  "pre_requisito": "Usuário com perfil de Editor cadastrado no sistema e permissão de acesso ao módulo Música ao Vivo. É necessário que já exista uma música cadastrada no sistema.",
   "funcionalidades": [
-    "Funcionalidade 1",
-    "Funcionalidade 2"
-  ],
-  "instrucoes_instalacao": "pip install seu-produto",
-  "exemplos_uso": [
     {
-      "titulo": "Exemplo Básico",
-      "descricao": "Como usar o produto",
-      "codigo": "# Seu código aqui"
+      "titulo": "Tela Principal",
+      "descricao": "A tela principal do módulo de edição apresenta o wave de áudio completo da música na área central. Na parte superior, está localizada a barra de ferramentas com os botões de ação (Criar, Classificar, Remover, Salvar, Voltar, Finalizar, Zoom, Wave e Pesquisa). O wave é interativo e permite seleção visual de trechos através do mouse.",
+      "prints": ["tela_principal.png"],
+      "observacoes": []
+    },
+    {
+      "titulo": "Criar Trecho",
+      "descricao": "Para criar um trecho, o usuário deve primeiro clicar no botão 'Criar Trecho' na barra de ferramentas. Em seguida, posicionar o cursor do mouse na posição inicial desejada no wave e, mantendo o botão pressionado, arrastar até a posição final. Ao soltar o botão, o sistema destaca visualmente o trecho selecionado com cor diferenciada (azul claro). O trecho criado fica em estado pendente até ser salvo.",
+      "prints": ["criar_trecho.png"],
+      "observacoes": [
+        "Só após clicar no botão 'Criar Trecho' é que o usuário consegue interagir com o Wave para seleção.",
+        "Ao criar um trecho sem finalizar (sem clicar em 'Salvar'), o sistema mantém como cadastro pendente e exibe um alerta ao tentar sair da tela.",
+        "É possível criar múltiplos trechos antes de salvar, todos ficarão destacados visualmente."
+      ]
+    },
+    {
+      "titulo": "Classificar",
+      "descricao": "A funcionalidade de classificar permite aplicar categorias predefinidas aos trechos criados. O usuário deve selecionar um trecho já criado clicando sobre ele e, em seguida, clicar no botão 'Classificar'. O sistema exibe uma janela modal com as categorias disponíveis. Ao selecionar uma categoria, o trecho recebe uma etiqueta visual correspondente.",
+      "prints": ["classificar_trecho.png"],
+      "observacoes": [
+        "A classificação só está disponível para trechos já criados.",
+        "Um trecho pode ter múltiplas classificações."
+      ]
+    },
+    {
+      "titulo": "Remover",
+      "descricao": "Para remover um trecho, o usuário deve selecioná-lo clicando sobre ele no wave e, em seguida, clicar no botão 'Remover'. O sistema solicita confirmação através de uma janela modal. Após confirmação, o trecho é excluído e o destaque visual é removido do wave.",
+      "prints": [],
+      "observacoes": [
+        "A remoção é irreversível após salvar as alterações."
+      ]
+    },
+    {
+      "titulo": "Salvar",
+      "descricao": "Ao clicar no botão 'Salvar', o sistema persiste todas as alterações realizadas (trechos criados, classificados ou removidos) no banco de dados. Uma mensagem de sucesso é exibida no canto superior direito da tela. Os trechos que estavam pendentes passam para o estado 'salvo'.",
+      "prints": [],
+      "observacoes": []
+    },
+    {
+      "titulo": "Cadastro Pendente",
+      "descricao": "O sistema mantém um controle de cadastros pendentes. Quando o usuário cria ou modifica trechos sem salvar e tenta sair da tela (através do botão 'Voltar' ou fechando a aba), uma janela modal de confirmação é exibida alertando sobre alterações não salvas. O usuário pode escolher entre salvar, descartar ou cancelar a ação.",
+      "prints": ["cadastro_pendente.png"],
+      "observacoes": [
+        "Este comportamento previne perda acidental de trabalho."
+      ]
     }
   ]
 }
