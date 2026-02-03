@@ -1,0 +1,22 @@
+{
+  "nome_produto": "Seu Produto",
+  "descricao": "Descrição breve do produto",
+  "versao": "1.0.0",
+  "autor": "Seu Nome",
+  "requisitos": [
+    "Python 3.8+",
+    "pip"
+  ],
+  "funcionalidades": [
+    "Funcionalidade 1",
+    "Funcionalidade 2"
+  ],
+  "instrucoes_instalacao": "pip install seu-produto",
+  "exemplos_uso": [
+    {
+      "titulo": "Exemplo Básico",
+      "descricao": "Como usar o produto",
+      "codigo": "# Seu código aqui"
+    }
+  ]
+}
