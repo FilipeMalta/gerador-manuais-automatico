@@ -64,7 +64,7 @@ def criar_manual(json_path: str, output_path: str):
                 last_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
                 doc.add_paragraph()  # Espaçamento
             except Exception as e:
-                print(f"⚠️  Erro ao inserir imagem {print_path}: {e}")
+                print(f"[AVISO] Erro ao inserir imagem {print_path}: {e}")
                 doc.add_paragraph(f'[Imagem não encontrada: {print_path}]')
         
         # Descrição
@@ -88,7 +88,7 @@ def criar_manual(json_path: str, output_path: str):
     
     # Salvar
     doc.save(output_path)
-    print(f'✅ Manual gerado com sucesso: {output_path}')
+    print(f'[OK] Manual gerado com sucesso: {output_path}')
 
 
 def criar_capa(doc, metadata, json_path):
@@ -102,7 +102,7 @@ def criar_capa(doc, metadata, json_path):
             doc.add_picture(str(logo_full_path), width=Inches(2))
             doc.paragraphs[-1].alignment = WD_ALIGN_PARAGRAPH.CENTER
         except Exception as e:
-            print(f"⚠️  Logo não encontrada: {e}")
+            print(f"[AVISO] Logo nao encontrada: {e}")
     
     # Espaçamento
     for _ in range(5):
@@ -122,14 +122,39 @@ def criar_capa(doc, metadata, json_path):
 
 
 def criar_sumario(doc):
-    """Cria página de sumário"""
+    """Cria página de sumário com campo TOC do Word"""
     doc.add_heading('Sumário', level=1)
-    
-    # Placeholder para sumário automático
-    p = doc.add_paragraph()
-    p.add_run('[Sumário será gerado automaticamente ao abrir o documento]')
-    p.runs[0].font.italic = True
-    p.runs[0].font.color.rgb = RGBColor(150, 150, 150)
+
+    # Criar campo TOC (Table of Contents) do Word
+    paragraph = doc.add_paragraph()
+    run = paragraph.add_run()
+
+    # Início do campo
+    fldChar1 = run._element.makeelement(qn('w:fldChar'))
+    fldChar1.set(qn('w:fldCharType'), 'begin')
+    run._element.append(fldChar1)
+
+    # Instrução do campo TOC
+    instrText = run._element.makeelement(qn('w:instrText'))
+    instrText.set(qn('xml:space'), 'preserve')
+    instrText.text = 'TOC \\o "1-2" \\h \\z \\u'
+    run._element.append(instrText)
+
+    # Separador
+    fldChar2 = run._element.makeelement(qn('w:fldChar'))
+    fldChar2.set(qn('w:fldCharType'), 'separate')
+    run._element.append(fldChar2)
+
+    # Texto placeholder
+    run2 = paragraph.add_run('Clique com botao direito e selecione "Atualizar campo" para gerar o sumario')
+    run2.font.italic = True
+    run2.font.color.rgb = RGBColor(150, 150, 150)
+
+    # Fim do campo
+    run3 = paragraph.add_run()
+    fldChar3 = run3._element.makeelement(qn('w:fldChar'))
+    fldChar3.set(qn('w:fldCharType'), 'end')
+    run3._element.append(fldChar3)
 
 
 def aplicar_rodape(doc, metadata):
@@ -197,13 +222,13 @@ def main():
     try:
         criar_manual(json_path, output_path)
     except FileNotFoundError as e:
-        print(f"❌ Erro: {e}")
+        print(f"[ERRO] {e}")
         sys.exit(1)
     except json.JSONDecodeError:
-        print(f"❌ Erro: JSON inválido em {json_path}")
+        print(f"[ERRO] JSON invalido em {json_path}")
         sys.exit(1)
     except Exception as e:
-        print(f"❌ Erro ao gerar manual: {e}")
+        print(f"[ERRO] Ao gerar manual: {e}")
         sys.exit(1)
 
 
