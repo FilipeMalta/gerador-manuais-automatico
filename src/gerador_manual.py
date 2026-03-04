@@ -157,12 +157,14 @@ def criar_capa_profissional(doc, metadata, json_path):
     titulo.runs[0].font.bold = True
     titulo.runs[0].font.color.rgb = RGBColor(30, 30, 30)
     
-    # Subtítulo com módulo
-    subtitulo = doc.add_paragraph(metadata['modulo'])
-    subtitulo.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    subtitulo.runs[0].font.size = Pt(14)
-    subtitulo.runs[0].font.bold = True
-    subtitulo.runs[0].font.color.rgb = RGBColor(80, 80, 80)
+    # Subtítulo com módulo (quando informado)
+    modulo = _normalizar_texto_metadata(metadata, 'modulo')
+    if modulo:
+        subtitulo = doc.add_paragraph(modulo)
+        subtitulo.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        subtitulo.runs[0].font.size = Pt(14)
+        subtitulo.runs[0].font.bold = True
+        subtitulo.runs[0].font.color.rgb = RGBColor(80, 80, 80)
     
     # Sistema (se fornecido)
     if metadata.get('sistema'):
@@ -237,86 +239,100 @@ def criar_sumario(doc):
     run3._element.append(fldChar3)
 
 
+def _normalizar_texto_metadata(metadata, campo):
+    """Retorna string segura para metadados, evitando erro com None."""
+    valor = metadata.get(campo, '')
+    if valor is None:
+        return ''
+    return str(valor).strip()
+
+
+def _adicionar_campo_word(paragraph, field_name):
+    """Insere um field do Word (ex.: PAGE, NUMPAGES) em um parágrafo."""
+    run = paragraph.add_run()
+
+    fld_char_begin = OxmlElement('w:fldChar')
+    fld_char_begin.set(qn('w:fldCharType'), 'begin')
+    run._element.append(fld_char_begin)
+
+    instr_text = OxmlElement('w:instrText')
+    instr_text.set(qn('xml:space'), 'preserve')
+    instr_text.text = f' {field_name} '
+    run._element.append(instr_text)
+
+    fld_char_separate = OxmlElement('w:fldChar')
+    fld_char_separate.set(qn('w:fldCharType'), 'separate')
+    run._element.append(fld_char_separate)
+
+    fld_char_end = OxmlElement('w:fldChar')
+    fld_char_end.set(qn('w:fldCharType'), 'end')
+    run._element.append(fld_char_end)
+
+
 def aplicar_rodape_profissional(doc, metadata):
     """Aplica rodapé padronizado e profissional em todas as páginas"""
-    section = doc.sections[0]
-    footer = section.footer
-    
-    # Limpar parágrafo existente
-    if footer.paragraphs:
-        p = footer.paragraphs[0]
-    else:
-        p = footer.add_paragraph()
-    
-    # Linha separadora do rodapé
-    pPr = p._element.get_or_add_pPr()
-    pBdr = OxmlElement('w:pBdr')
-    
-    top = OxmlElement('w:top')
-    top.set(qn('w:val'), 'single')
-    top.set(qn('w:sz'), '12')
-    top.set(qn('w:space'), '1')
-    top.set(qn('w:color'), '999999')
-    pBdr.append(top)
-    pPr.append(pBdr)
-    
-    # Limpar conteúdo anterior
-    for i in range(len(p.runs)):
-        r = p.runs[0]._element
-        r.getparent().remove(r)
-    
-    # Construir rodapé com informações detalhadas
-    # Parte 1: Sistema e Módulo
-    sistema_texto = metadata.get('sistema', 'Sistema')
-    
-    # Usar runs para montar o footer
+    elaborado = _normalizar_texto_metadata(metadata, 'elaborado')
+    modulo = _normalizar_texto_metadata(metadata, 'modulo')
+    revisado = _normalizar_texto_metadata(metadata, 'revisado')
+    classificacao = _normalizar_texto_metadata(metadata, 'classificacao')
+
+    bloco_elaborado = f'Elaborado: {elaborado}'
+    if modulo:
+        bloco_elaborado += f' por {modulo}'
+
     footer_content = (
-        f"Elaborado: {metadata['elaborado']} • "
-        f"Revisado: {metadata['revisado']} • "
-        f"Classificação: {metadata['classificacao'].upper()} • "
-        f"Página "
+        f'{bloco_elaborado} • '
+        f'Revisado: {revisado} • '
+        f'Classificação: {classificacao} • '
+        f'Página '
     )
-    
-    run_text = p.add_run(footer_content)
-    run_text.font.size = Pt(8)
-    run_text.font.color.rgb = RGBColor(100, 100, 100)
-    
-    # Adicionar número de página atual
-    run = p.add_run()
-    fldChar1 = run._element.makeelement(qn('w:fldChar'))
-    fldChar1.set(qn('w:fldCharType'), 'begin')
-    run._element.append(fldChar1)
-    
-    instrText = run._element.makeelement(qn('w:instrText'))
-    instrText.set(qn('xml:space'), 'preserve')
-    instrText.text = "PAGE"
-    run._element.append(instrText)
-    
-    fldChar2 = run._element.makeelement(qn('w:fldChar'))
-    fldChar2.set(qn('w:fldCharType'), 'end')
-    run._element.append(fldChar2)
-    
-    run_slash = p.add_run(' de ')
-    run_slash.font.size = Pt(8)
-    run_slash.font.color.rgb = RGBColor(100, 100, 100)
-    
-    # Adicionar número total de páginas
-    run = p.add_run()
-    fldChar1 = run._element.makeelement(qn('w:fldChar'))
-    fldChar1.set(qn('w:fldCharType'), 'begin')
-    run._element.append(fldChar1)
-    
-    instrText = run._element.makeelement(qn('w:instrText'))
-    instrText.set(qn('xml:space'), 'preserve')
-    instrText.text = "NUMPAGES"
-    run._element.append(instrText)
-    
-    fldChar2 = run._element.makeelement(qn('w:fldChar'))
-    fldChar2.set(qn('w:fldCharType'), 'end')
-    run._element.append(fldChar2)
-    
-    # Centralizar e formatar
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+    for section in doc.sections:
+        footer = section.footer
+
+        # Limpar parágrafo existente
+        if footer.paragraphs:
+            p = footer.paragraphs[0]
+        else:
+            p = footer.add_paragraph()
+
+        # Linha separadora do rodapé
+        pPr = p._element.get_or_add_pPr()
+        for child in list(pPr):
+            if child.tag == qn('w:pBdr'):
+                pPr.remove(child)
+
+        pBdr = OxmlElement('w:pBdr')
+
+        top = OxmlElement('w:top')
+        top.set(qn('w:val'), 'single')
+        top.set(qn('w:sz'), '12')
+        top.set(qn('w:space'), '1')
+        top.set(qn('w:color'), '999999')
+        pBdr.append(top)
+        pPr.append(pBdr)
+
+        # Limpar conteúdo anterior
+        while p.runs:
+            r = p.runs[0]._element
+            r.getparent().remove(r)
+
+        # Blocos textuais com separador corporativo
+        run_text = p.add_run(footer_content)
+        run_text.font.size = Pt(8)
+        run_text.font.color.rgb = RGBColor(100, 100, 100)
+
+        # Campos automáticos de paginação
+        _adicionar_campo_word(p, 'PAGE')
+
+        run_de = p.add_run(' de ')
+        run_de.font.size = Pt(8)
+        run_de.font.color.rgb = RGBColor(100, 100, 100)
+
+        _adicionar_campo_word(p, 'NUMPAGES')
+
+        # Centralizar e formatar
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
 
 def main():
