@@ -20,7 +20,13 @@
       "titulo": "string (obrigatório)",
       "descricao": "string (obrigatório)",
       "prints": ["array de strings (opcional)"],
-      "observacoes": ["array de strings (opcional)"]
+      "observacoes": ["array de strings (opcional)"],
+      "icones": [
+        {
+          "nome": "string (opcional)",
+          "descricao": "string (opcional)"
+        }
+      ]
     }
   ]
 }
@@ -29,6 +35,26 @@
 ---
 
 ## Campos Detalhados
+
+### 🆕 Novos Recursos (v2.0)
+
+#### Breadcrumbs Automáticos
+O gerador automaticamente cria breadcrumbs de navegação em cada funcionalidade usando o padrão: `Módulo >> Nome da Funcionalidade`
+
+**Exemplo renderizado**:
+```
+Música ao Vivo >> Tela Principal
+Música ao Vivo >> Criar Trecho
+Música ao Vivo >> Classificar
+```
+
+#### Legendas de Imagens
+Cada imagem inserida recebe automaticamente uma legenda numerada: `Figura 3.1.1: Nome da Funcionalidade`
+
+#### Ícones com Legendas
+Campo novo para documentar ícones utilizados em cada funcionalidade.
+
+---
 
 ### metadata (obrigatório)
 
@@ -136,6 +162,8 @@ Informações gerais do manual.
 - Formatos aceitos: PNG, JPG, JPEG
 - Nomes descritivos
 
+**Novo em v2.0**: Cada imagem recebe numeração hierárquica automática com legenda
+
 **Exemplo**:
 ```json
 "prints": [
@@ -143,6 +171,13 @@ Informações gerais do manual.
   "criar_trecho_passo1.png",
   "criar_trecho_passo2.png"
 ]
+```
+
+**Renderização no manual**:
+```
+Figura 3.1.1: Tela Principal
+Figura 3.1.2: Tela Principal
+Figura 3.1.3: Tela Principal
 ```
 
 **⚠️ Importante**: 
@@ -163,6 +198,8 @@ Informações gerais do manual.
 - Comportamentos não óbvios
 - Dicas importantes
 
+**Novo em v2.0**: Agora renderizadas com bullets (•) e indentação profissional
+
 **Exemplo**:
 ```json
 "observacoes": [
@@ -173,13 +210,63 @@ Informações gerais do manual.
 
 **Renderização no manual**:
 ```
-Obs1: Só após clicar no botão 'Criar Trecho'...
-Obs2: A remoção é irreversível após salvar...
+Observações:
+• Só após clicar no botão 'Criar Trecho'...
+• A remoção é irreversível após salvar...
 ```
 
 ---
 
-## Exemplo Completo
+##### 🆕 icones (opcional - NOVO v2.0)
+
+**Tipo**: `array de objetos`
+
+**Descrição**: Lista de ícones utilizados na funcionalidade com suas descrições.
+
+**Estrutura**:
+```json
+"icones": [
+  {
+    "nome": "string",
+    "descricao": "string"
+  }
+]
+```
+
+**Quando usar**:
+- Explicar ícones de interface
+- Descrever símbolos importantes
+- Documentar controles visuais
+
+**Exemplo**:
+```json
+"icones": [
+  {
+    "nome": "Player",
+    "descricao": "Inicia a reprodução do áudio"
+  },
+  {
+    "nome": "Volume",
+    "descricao": "Controla o nível de volume"
+  },
+  {
+    "nome": "Velocidade",
+    "descricao": "Ajusta a velocidade de reprodução"
+  }
+]
+```
+
+**Renderização no manual**:
+```
+Ícones Utilizados:
+• Player: Inicia a reprodução do áudio
+• Volume: Controla o nível de volume
+• Velocidade: Ajusta a velocidade de reprodução
+```
+
+---
+
+## Exemplo Completo (v2.0)
 
 ```json
 {
@@ -202,6 +289,20 @@ Obs2: A remoção é irreversível após salvar...
       "observacoes": [
         "Usuários inativos aparecem em cinza na listagem.",
         "A exportação gera arquivo CSV com todos os filtros aplicados."
+      ],
+      "icones": [
+        {
+          "nome": "Novo Usuário",
+          "descricao": "Abre formulário para criar novo usuário"
+        },
+        {
+          "nome": "Exportar",
+          "descricao": "Exporta dados da listagem em formato CSV"
+        },
+        {
+          "nome": "Filtrar",
+          "descricao": "Aplica filtros aos registros exibidos"
+        }
       ]
     },
     {
@@ -210,7 +311,18 @@ Obs2: A remoção é irreversível após salvar...
       "prints": ["usuarios_criar_modal.png", "usuarios_criar_validacao.png"],
       "observacoes": [
         "O email deve ser único no sistema.",
-        "A senha deve ter no mínimo 8 caracteres, incluindo letras e números."
+        "A senha deve ter no mínimo 8 caracteres, incluindo letras e números.",
+        "O perfil determina as permissões do usuário no sistema."
+      ],
+      "icones": [
+        {
+          "nome": "Salvar",
+          "descricao": "Confirma e salva o novo usuário"
+        },
+        {
+          "nome": "Cancelar",
+          "descricao": "Fecha o formulário sem salvar"
+        }
       ]
     },
     {
@@ -218,7 +330,18 @@ Obs2: A remoção é irreversível após salvar...
       "descricao": "Na listagem, clicar no ícone de lápis na linha do usuário desejado. O sistema abre modal com os dados atuais preenchidos. É possível alterar todos os campos exceto o email. Após editar, clicar em 'Salvar' para persistir as alterações.",
       "prints": ["usuarios_editar.png"],
       "observacoes": [
-        "O email não pode ser alterado após criação. Para mudar, é necessário criar novo usuário."
+        "O email não pode ser alterado após criação. Para mudar, é necessário criar novo usuário.",
+        "Mudanças no perfil afetam as permissões imediatamente."
+      ],
+      "icones": [
+        {
+          "nome": "Editar",
+          "descricao": "Abre formulário para editar usuário selecionado"
+        },
+        {
+          "nome": "Salvar",
+          "descricao": "Confirma as alterações do usuário"
+        }
       ]
     }
   ]
@@ -264,6 +387,77 @@ assert 'objetivo' in dados
 assert 'pre_requisito' in dados
 assert 'funcionalidades' in dados
 ```
+
+---
+
+## Dicas de Boas Práticas
+
+### 1. Organização de Arquivos
+```
+projeto/
+├── manual_input.json
+├── logo.png
+└── screenshots/
+    ├── tela1.png
+    ├── tela2.png
+    └── tela3.png
+```
+
+### 2. Nomenclatura de Imagens
+```
+✅ criar_usuario_modal.png
+✅ editar_usuario_form.png
+✅ listagem_usuarios.png
+
+❌ img1.png
+❌ Screenshot 2024-01-01.png
+❌ Captura de Tela.png
+```
+
+### 3. Tamanho do JSON
+- Funcionalidades: idealmente 4-10 por manual
+- Observações: 0-3 por funcionalidade
+- Prints: 0-2 por funcionalidade
+- Ícones: 0-5 por funcionalidade
+
+### 4. Versionamento
+- Manter histórico de JSONs
+- Nomear com versão: `manual_v1.json`, `manual_v2.json`
+- Documentar mudanças em changelog
+
+### 5. Padrões Profissionais (v2.0+)
+
+#### Breadcrumbs Automáticos
+- Gerados automaticamente a partir do módulo e título
+- Formato: `Módulo >> Funcionalidade`
+- Posicionados antes de cada seção
+
+#### Legendas de Figuras
+- Numeração hierárquica: `Figura 3.1.1`, `Figura 3.1.2`, etc.
+- Descrevem o conteúdo da imagem
+- Posicionadas abaixo de cada figura
+
+#### Estrutura de Observações
+- Uso de bullets (•) para melhor legibilidade
+- Indentação profissional
+- Agrupadas em seção "Observações:"
+
+#### Campo de Ícones
+- Documento todos os ícones importantes
+- Acompanhados de descrição clara
+- Formatados em lista com bullets
+
+---
+
+## Migração para v2.0
+
+Se você possui JSONs na versão anterior, as mudanças são totalmente retrocompatíveis:
+
+- ✅ O campo `icones` é **opcional**
+- ✅ Novos recursos automáticos (breadcrumbs, legendas) funcionam sem modificações
+- ✅ Estrutura anterior continua funcionando perfeitamente
+
+**Recomendação**: Adicione o campo `icones` aos seus JSONs existentes para aproveitar todos os novos recursos.
 
 ---
 

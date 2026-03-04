@@ -15,7 +15,21 @@
       "titulo": "Tela Principal",
       "descricao": "A tela principal do módulo de edição apresenta o wave de áudio completo da música na área central. Na parte superior, está localizada a barra de ferramentas com os botões de ação (Criar, Classificar, Remover, Salvar, Voltar, Finalizar, Zoom, Wave e Pesquisa). O wave é interativo e permite seleção visual de trechos através do mouse.",
       "prints": ["tela_principal.png"],
-      "observacoes": []
+      "observacoes": [],
+      "icones": [
+        {
+          "nome": "Criar",
+          "descricao": "Inicia o modo de criação de novos trechos"
+        },
+        {
+          "nome": "Classificar",
+          "descricao": "Permite aplicar categorias aos trechos selecionados"
+        },
+        {
+          "nome": "Remover",
+          "descricao": "Deleta o trecho selecionado"
+        }
+      ]
     },
     {
       "titulo": "Criar Trecho",
@@ -25,6 +39,12 @@
         "Só após clicar no botão 'Criar Trecho' é que o usuário consegue interagir com o Wave para seleção.",
         "Ao criar um trecho sem finalizar (sem clicar em 'Salvar'), o sistema mantém como cadastro pendente e exibe um alerta ao tentar sair da tela.",
         "É possível criar múltiplos trechos antes de salvar, todos ficarão destacados visualmente."
+      ],
+      "icones": [
+        {
+          "nome": "Drag & Drop",
+          "descricao": "Arraste o mouse para selecionar o trecho desejado"
+        }
       ]
     },
     {
