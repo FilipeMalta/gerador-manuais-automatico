@@ -124,10 +124,10 @@ def criar_manual(json_path: str, output_path: str):
     
     # ===== RODAPÉ PROFISSIONAL =====
     aplicar_rodape_profissional(doc, dados['metadata'])
-    
+
     # Garantir diretório de saída
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
-    
+
     # Salvar
     doc.save(output_path)
     print(f'[OK] Manual gerado com sucesso: {output_path}')
